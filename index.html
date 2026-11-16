@@ -1,4 +1,4 @@
-
+<!-- 아영이 대화 기억 기능 -->
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -57,7 +57,22 @@ footer{text-align:center;padding:8px;color:#b49aaa;font-size:10px}
 <script>
 const chat=document.getElementById('chat');
 const input=document.getElementById('message');
-let lastReply="안녕~ 기다리고 있었어! 오늘 하루는 어땠어?";
+// 아영이 대화 기록 불러오기
+const savedChat = localStorage.getItem('ayoungChat');
+if (savedChat) {
+  chat.innerHTML = savedChat;
+}
+
+// 대화 내용 자동 저장
+const observer = new MutationObserver(() => {
+  localStorage.setItem('ayoungChat', chat.innerHTML);
+});
+
+observer.observe(chat, {
+  childList: true,
+  subtree: true,
+  characterData: true
+});let lastReply="안녕~ 기다리고 있었어! 오늘 하루는 어땠어?";
 function add(text,who){
  const div=document.createElement('div');
  div.className='message '+who;
