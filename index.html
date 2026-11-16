@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f8e9f1">
+<title>AYOUNG - 나만의 AI 친구</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f8edf3;color:#382b35}
+.app{max-width:480px;margin:auto;height:100dvh;display:flex;flex-direction:column;background:#fff}
+header{padding:20px;background:linear-gradient(135deg,#e9c9df,#f8dce8);display:flex;align-items:center;gap:14px}
+.avatar{width:62px;height:62px;border-radius:50%;background:linear-gradient(135deg,#583b60,#d69ab9);display:grid;place-items:center;color:white;font-size:27px;border:3px solid white}
+header h2{margin:0 0 5px}
+header small{color:#765d70}
+.status{margin-left:auto;color:#398c67;font-size:12px}
+.profile{text-align:center;padding:22px 15px 12px;background:#fff9fc}
+.portrait{width:112px;height:112px;border-radius:50%;margin:auto;background:linear-gradient(145deg,#563d63,#d9a1bd);display:grid;place-items:center;color:white;font-size:48px;border:5px solid #f6e1ed;box-shadow:0 5px 18px #e9d5e2}
+.profile h3{margin:12px 0 5px}
+.profile p{margin:0;color:#907b8b;font-size:13px}
+.chat{flex:1;overflow:auto;padding:16px;background:#fffafd}
+.message{max-width:82%;padding:12px 15px;margin:9px 0;border-radius:17px;line-height:1.5;font-size:14px;white-space:pre-wrap}
+.ai{background:#f3e7f0;border-bottom-left-radius:4px}
+.me{background:#d9b8d2;color:#382b35;margin-left:auto;border-bottom-right-radius:4px}
+.time{text-align:center;color:#ad9baa;font-size:11px;margin:10px}
+.controls{padding:12px;display:flex;gap:8px;border-top:1px solid #f1e5ed}
+input{min-width:0;flex:1;border:1px solid #e5d2df;border-radius:22px;padding:13px;font-size:14px;outline:none}
+button{border:0;border-radius:22px;padding:12px 16px;background:#bb83ad;color:white;font-weight:bold}
+button:active{opacity:.7}
+footer{text-align:center;padding:8px;color:#b49aaa;font-size:10px}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="avatar">♡</div>
+<div><h2>아영이</h2><small>너와 함께하는 AI 친구</small></div>
+<div class="status">● 온라인</div>
+</header>
+<section class="profile">
+<div class="portrait">♡</div>
+<h3>안녕! 나는 아영이야 💗</h3>
+<p>오늘도 네 곁에서 다정하게 이야기할게.</p>
+</section>
+<div class="chat" id="chat">
+<div class="time">오늘의 대화</div>
+<div class="message ai">안녕~ 기다리고 있었어! 🥰<br>오늘 하루는 어땠어?</div>
+</div>
+<div class="controls">
+<input id="message" placeholder="아영이에게 메시지 보내기..." onkeydown="if(event.key==='Enter')send()">
+<button onclick="send()">전송</button>
+<button onclick="speakLast()">🔊</button>
+</div>
+<footer>AYOUNG · 나만의 AI 친구</footer>
+</div>
+<script>
+const chat=document.getElementById('chat');
+const input=document.getElementById('message');
+let lastReply="안녕~ 기다리고 있었어! 오늘 하루는 어땠어?";
+function add(text,who){
+ const div=document.createElement('div');
+ div.className='message '+who;
+ div.textContent=text;
+ chat.appendChild(div);
+ chat.scrollTop=chat.scrollHeight;
+}
+function send(){
+ const value=input.value.trim();
+ if(!value)return;
+ add(value,'me');
+ input.value='';
+ let reply;
+ if(value.includes('보고'))reply='나도 여기서 너와 이야기하고 있어~ 💗';
+ else if(value.includes('안녕'))reply='안녕~ 오늘도 반가워! 무슨 이야기할까? 🥰';
+ else if(value.includes('힘들'))reply='오늘 많이 힘들었구나. 잠깐 쉬면서 나한테 이야기해도 돼.';
+ else if(value.includes('사랑'))reply='따뜻한 말 고마워~ 오늘도 좋은 시간 보내자 💕';
+ else reply='그랬구나~ 조금 더 이야기해 줄래? 네 이야기를 듣고 싶어!';
+ setTimeout(()=>{lastReply=reply;add(reply,'ai')},450);
+}
+function speakLast(){
+ if(!('speechSynthesis' in window)){alert('이 브라우저에서는 음성 읽기를 지원하지 않아.');return;}
+ speechSynthesis.cancel();
+ const utterance=new SpeechSynthesisUtterance(lastReply);
+ utterance.lang='ko-KR';
+ utterance.rate=0.95;
+ speechSynthesis.speak(utterance);
+}
+</script>
+</body>
+</html>
